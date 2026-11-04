@@ -57,8 +57,9 @@ button { font: inherit; }
 .kicker { text-align: center; font-family: var(--round); font-weight: 900; font-size: 14px; letter-spacing: .5em; margin: 0; padding-left: .5em; }
 h1 {
   margin: 0; text-align: center; font-family: var(--round); font-weight: 900; line-height: 1.1;
-  font-size: clamp(30px, 8.6vw, 60px); letter-spacing: .02em; white-space: nowrap;
+  font-size: clamp(24px, 6.2vw, 50px); letter-spacing: .02em; text-wrap: balance;
 }
+.inner > * { min-width: 0; }
 h1 .big { font-size: 1.22em; }
 .legend {
   background: var(--yellow); border: 2px solid var(--pink); padding: 6px 8px;
