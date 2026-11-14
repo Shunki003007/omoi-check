@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>どこでメロくなる？チェックシート</title>
+<meta name="description" content="ふたりで40問にチェック。お互いがチェックした問題から答えが公開される「どこでメロくなる？」チェックシート">
+<meta name="theme-color" content="#c63cf0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800;900&display=swap">
+<style>
+/* The model sheet: pink-to-violet gradient, white outlined title with a yellow "メロ", white table with deep-purple rules, 3 check columns */
+:root {
+  --ink: #3a0d5c;        /* deep purple: rules, text, outlines */
+  --pink: #ff4fc8;
+  --violet: #a63cf2;
+  --lav: #e9d4ff;        /* page-1 table header */
+  --yellow: #ffe94a;
+  --white: #ffffff;
+  --theirs: #ffd0f1;     /* partner's revealed cell */
+  --font: "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", "Yu Gothic", sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; min-height: 100vh; color: var(--ink); font-family: var(--font); font-weight: 800; font-size: 15px; line-height: 1.5;
+  background: linear-gradient(135deg, #ff4fc8 0%, #e046e6 35%, #b43cf0 70%, #9b3cf5 100%) fixed;
+  background-color: #c63cf0;
+  padding-left: max(10px, env(safe-area-inset-left, 0px));
+  padding-right: max(10px, env(safe-area-inset-right, 0px));
+  padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px));
+}
+[hidden] { display: none !important; }
+button { font: inherit; }
+.wrap { max-width: 820px; margin: 0 auto; display: grid; gap: 14px; }
+.wrap > * { min-width: 0; }
+
+/* sticky status pill */
+.status {
+  position: sticky; top: 0; z-index: 5; display: flex; justify-content: center;
+  padding-top: calc(8px + env(safe-area-inset-top, 0px)); padding-bottom: 6px; pointer-events: none;
+}
+.status div {
+  pointer-events: auto; background: var(--ink); color: var(--white); border: 2px solid var(--white); border-radius: 999px;
+  padding: 4px 16px; font-size: 13px; font-variant-numeric: tabular-nums; white-space: nowrap; box-shadow: 0 2px 10px rgba(58, 13, 92, .3);
+}
+.status span { opacity: .65; margin: 0 .4em; }
+
+/* header */
+.sparkle { position: absolute; color: var(--white); filter: drop-shadow(0 0 4px rgba(255,255,255,.8)); pointer-events: none; }
+header { position: relative; display: grid; justify-items: center; gap: 10px; padding-top: 6px; text-align: center; }
+h1 {
+  margin: 0; font-weight: 900; font-size: clamp(25px, 6.6vw, 52px); line-height: 1.15; color: var(--white);
+  -webkit-text-stroke: 6px var(--ink); paint-order: stroke fill; letter-spacing: .01em; text-wrap: balance;
+}
+h1 .mero { color: var(--yellow); }
+.sub {
+  background: #ffe6f8; color: var(--ink); border-radius: 999px; padding: 6px 24px; font-size: clamp(14px, 3.6vw, 24px); font-weight: 900;
+  box-shadow: 0 2px 0 rgba(58, 13, 92, .25); max-width: 100%;
+}
+.hint { color: var(--white); font-weight: 900; font-size: clamp(14px, 3.4vw, 22px); letter-spacing: .04em; text-shadow: 0 1px 3px rgba(58, 13, 92, .35); }
+.hint b { font-weight: 900; margin: 0 .4em; opacity: .95; }
+
+/* panel */
+.panel { background: var(--white); border: 3px solid var(--ink); border-radius: 16px; padding: 12px 14px; display: grid; gap: 10px; font-size: 13px; }
+.panel h2 { margin: 0; font-size: 16px; font-weight: 900; }
+.panel p { margin: 0; font-weight: 700; }
+.row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
+.panel input, .panel select {
+  font: inherit; font-size: 16px; color: var(--ink); background: #f7efff; border: 2px solid var(--ink); border-radius: 10px;
+  padding: 6px 10px; width: 100%; min-width: 0;
+}
+.panel input::placeholder { color: #a78bc0; }
+.panel input:focus, .panel select:focus { outline: 3px solid var(--pink); outline-offset: 1px; }
+.btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.btn {
+  font-weight: 900; font-size: 13px; padding: 7px 16px; border-radius: 999px; border: 2px solid var(--ink);
+  background: var(--white); color: var(--ink); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; white-space: nowrap;
+}
+.btn.fill { background: var(--ink); color: var(--white); }
+.btn:focus-visible { outline: 3px solid var(--pink); outline-offset: 2px; }
+.names { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.names label { display: block; font-size: 12px; margin-bottom: 3px; }
+.partner-static { border: 2px dashed var(--ink); border-radius: 10px; padding: 6px 10px; min-height: 40px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.key { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; }
+.key > span { display: inline-flex; align-items: center; gap: 6px; }
+.key .cb { width: 24px; height: 24px; }
+.sw { width: 26px; height: 26px; border-radius: 6px; background: var(--theirs); border: 2px solid var(--ink); display: inline-block; }
+.sync::before { content: "● "; color: #18b26b; }
+.sync.warn::before { color: #f0a020; }
+.rule-note { background: #fff6c2; border-radius: 10px; padding: 8px 10px; font-weight: 700; }
+.notice { background: var(--yellow); border: 3px solid var(--ink); border-radius: 12px; padding: 8px 12px; font-size: 13px; }
+
+/* tables */
+.sheet { display: grid; gap: 8px; }
+.range { justify-self: end; background: var(--ink); color: var(--white); border: 2px solid var(--white); border-radius: 999px; padding: 2px 18px; font-size: clamp(16px, 3.6vw, 26px); font-weight: 900; font-variant-numeric: tabular-nums; }
+.tbl { background: var(--white); border: 3px solid var(--ink); border-radius: 12px; overflow: hidden; }
+.tr { display: grid; grid-template-columns: var(--no) 1fr repeat(3, var(--ck)); border-top: 2px solid var(--ink); }
+.tr:first-child { border-top: 0; }
+.tr > * { border-left: 2px solid var(--ink); min-width: 0; }
+.tr > *:first-child { border-left: 0; }
+:root { --no: 64px; --ck: 96px; }
+.th { background: var(--lav); }
+.tbl.dark .th { background: var(--ink); color: var(--white); }
+.tbl.dark .th > * { border-left-color: rgba(255,255,255,.55); }
+.th > div { display: grid; place-items: center; text-align: center; font-weight: 900; font-size: 15px; line-height: 1.15; padding: 8px 2px; }
+.no { display: grid; place-items: center; font-weight: 900; font-size: 22px; font-variant-numeric: tabular-nums; }
+.qt { padding: 8px 10px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; font-size: 16px; font-weight: 800; }
+.qt .tx { min-width: 0; }
+.tag { font-size: 10.5px; font-weight: 900; border-radius: 999px; padding: 1px 8px; white-space: nowrap; }
+.tag.wait { background: #f0e6fb; color: #7a5a98; }
+.tag.done { background: var(--ink); color: var(--white); }
+.tag.match { background: var(--yellow); color: var(--ink); border: 1.5px solid var(--ink); }
+.cell { display: grid; place-items: center; position: relative; padding: 6px 0; transition: background .15s; }
+.cell.theirs { background: var(--theirs); }
+.cell .who { position: absolute; right: 3px; bottom: 2px; font-size: 9px; font-weight: 900; color: #b0258f; line-height: 1; display: none; max-width: 90%; overflow: hidden; white-space: nowrap; }
+.cell.theirs .who { display: block; }
+.cb {
+  width: 32px; height: 32px; border: 3px solid var(--ink); border-radius: 7px; background: var(--white); cursor: pointer; padding: 0;
+  display: grid; place-items: center; -webkit-tap-highlight-color: transparent; transition: background .12s;
+}
+.cb:hover { background: #f6ecff; }
+.cb:focus-visible { outline: 3px solid var(--pink); outline-offset: 2px; }
+.cb svg { width: 24px; height: 24px; opacity: 0; transform: scale(.5); transition: opacity .12s, transform .12s; }
+.cb[aria-pressed="true"] { background: var(--ink); }
+.cb[aria-pressed="true"] svg { opacity: 1; transform: none; }
+
+/* bottom: talk about it */
+.talk {
+  justify-self: center; width: min(100%, 680px); background: #ffe6f8; color: var(--ink); border-radius: 999px; text-align: center;
+  font-weight: 900; font-size: clamp(17px, 4.4vw, 32px); padding: 8px 18px; box-shadow: 0 2px 0 rgba(58, 13, 92, .25);
+}
+.talk.dark { background: var(--ink); color: var(--white); }
+.points { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.point { background: var(--white); border: 3px solid var(--ink); border-radius: 16px; padding: 10px 12px; display: grid; gap: 6px; align-content: start; }
+.point h3 { margin: 0; font-size: 14px; font-weight: 900; }
+.point textarea { font: inherit; font-weight: 700; font-size: 16px; color: var(--ink); background: #f7efff; border: 2px solid var(--ink); border-radius: 10px; padding: 8px 10px; min-height: 100px; resize: vertical; width: 100%; }
+.point textarea:focus { outline: 3px solid var(--pink); outline-offset: 1px; }
+.point .pm { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-weight: 700; }
+.point .pm:empty::before { content: "まだ書かれていません"; color: #a78bc0; }
+
+.result { background: var(--white); border: 3px solid var(--ink); border-radius: 16px; padding: 12px 14px; display: grid; gap: 8px; }
+.result h2 { margin: 0; font-size: 16px; font-weight: 900; }
+.tally { display: grid; grid-template-columns: auto repeat(3, 1fr); gap: 4px 10px; font-variant-numeric: tabular-nums; font-size: 14px; }
+.tally .h { font-size: 12px; }
+.tally .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 8em; }
+.credit { color: var(--white); text-align: center; font-size: 12px; font-weight: 700; margin: 0; text-shadow: 0 1px 2px rgba(58, 13, 92, .4); }
+.credit a { color: inherit; }
+
+@media (max-width: 600px) {
+  :root { --no: 34px; --ck: 52px; }
+  h1 { -webkit-text-stroke-width: 4px; }
+  .th > div { font-size: 11px; padding: 6px 1px; }
+  .no { font-size: 15px; }
+  .qt { font-size: 13.5px; padding: 6px 7px; }
+  .cb { width: 28px; height: 28px; border-radius: 6px; }
+  .cb svg { width: 20px; height: 20px; }
+  .names, .points { grid-template-columns: 1fr; }
+  .talk { border-radius: 20px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="chk" viewBox="0 0 24 24"><path d="M4 12.5 L10 18 L20.5 6" stroke="#ffffff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></symbol>
+  <symbol id="spk" viewBox="0 0 24 24"><path d="M12 0 C13 8 16 11 24 12 C16 13 13 16 12 24 C11 16 8 13 0 12 C8 11 11 8 12 0Z" fill="currentColor"/></symbol>
+</svg>
+
+<div class="status"><div id="pill">あなた 0<span>/</span>40</div></div>
+
+<div class="wrap">
+  <header>
+    <svg class="sparkle" style="left:2%;top:4px;width:30px;height:30px"><use href="#spk"/></svg>
+    <svg class="sparkle" style="left:7%;top:40px;width:16px;height:16px"><use href="#spk"/></svg>
+    <svg class="sparkle" style="right:2%;top:10px;width:26px;height:26px"><use href="#spk"/></svg>
+    <svg class="sparkle" style="right:7%;top:48px;width:16px;height:16px"><use href="#spk"/></svg>
+    <h1>「どこで<span class="mero">メロ</span>くなる？」チェックシート</h1>
+    <div class="sub">推しのどんな言動に「メロい…」ってなる？</div>
+    <div class="hint"><b>＼</b>当てはまる欄にチェックしてね！<b>／</b></div>
+  </header>
+
+  <section class="panel" aria-label="ふたりのルーム">
+    <h2>ふたりのルーム</h2>
+    <p id="roomHint">このリンクを相手に送ると、同じシートにふたりでチェックできます。登録は不要です。</p>
+    <div class="row">
+      <input id="roomLink" readonly aria-label="招待リンク">
+      <button class="btn fill" id="copyBtn" type="button">コピー</button>
+    </div>
+    <div class="btns">
+      <a class="btn" id="lineBtn" href="#" target="_blank" rel="noopener">LINEで送る</a>
+      <button class="btn" id="newRoomBtn" type="button">新しいルームを作る</button>
+    </div>
+    <div class="names">
+      <div><label for="myName">あなたの名前</label><input id="myName" maxlength="20" placeholder="ニックネーム" autocomplete="off"></div>
+      <div><label for="partnerSel">相手</label>
+        <select id="partnerSel" hidden></select>
+        <div id="partnerStatic" class="partner-static">参加を待っています…</div>
+      </div>
+    </div>
+    <div class="key">
+      <span><span class="cb" aria-pressed="true" style="cursor:default"><svg><use href="#chk"/></svg></span>あなたのチェック</span>
+      <span><span class="sw"></span><span id="keyPartner">相手のチェック</span></span>
+      <span id="sync" class="sync warn">接続中…</span>
+    </div>
+    <p class="rule-note">相手の答えは、<b>ふたりとも同じ問題にチェックしたときだけ</b>公開されます。それまでは「相手 回答済み」とだけ表示されます。</p>
+  </section>
+
+  <div id="notice" class="notice" hidden></div>
+
+  <section class="sheet" aria-label="1〜20">
+    <div class="range">1〜20</div>
+    <div class="tbl" id="tbl1"></div>
+  </section>
+  <section class="sheet" aria-label="21〜40">
+    <div class="range">21〜40</div>
+    <div class="tbl dark" id="tbl2"></div>
+  </section>
+
+  <div class="talk">あなたのメロいポイントを語ってね！</div>
+  <section class="points" aria-label="メロいポイント">
+    <div class="point">
+      <h3>あなたのメロいポイント</h3>
+      <textarea id="myMemo" maxlength="1000" placeholder="これが一番メロい！を書いてね" aria-label="あなたのメロいポイント"></textarea>
+    </div>
+    <div class="point">
+      <h3 id="ptMemoTitle">相手のメロいポイント</h3>
+      <p class="pm" id="ptMemo"></p>
+    </div>
+  </section>
+
+  <section class="result" aria-label="結果">
+    <h2>ふたりの結果</h2>
+    <div class="tally">
+      <span class="h"></span><span class="h">メロい</span><span class="h">ちょっとメロい</span><span class="h">メロくない</span>
+      <span class="nm" id="tMeN">あなた</span><span id="tMe1">0</span><span id="tMe2">0</span><span id="tMe3">0</span>
+      <span class="nm" id="tPtN">相手</span><span id="tPt1">0</span><span id="tPt2">0</span><span id="tPt3">0</span>
+    </div>
+    <div>公開された問題：<span id="openN">0</span> 問 ／ 答えが一致：<span id="matchN">0</span> 問</div>
+    <p style="margin:0;font-size:12px;font-weight:700">相手の数は、公開された問題だけを数えています。</p>
+    <div class="btns"><button class="btn" id="resetBtn" type="button">自分のチェックを全部消す</button></div>
+  </section>
+
+  <p class="credit">質問の出典：<a href="https://x.com/nahari1227/status/2121457272656482475" target="_blank" rel="noopener">@nahari1227 さんのチェックシート</a><br>チェックは公開の中継サーバーで同期されます。リンクは一緒に遊ぶ相手にだけ送ってください。</p>
+</div>
+
+<script src="https://unpkg.com/mqtt@5.10.1/dist/mqtt.min.js"></script>
+<script>
+const QUESTIONS = [
+  "ふいに名前を呼んでくる",
+  "名前を呼ぶときだけ声が優しくなる",
+  "いつもは「さん」付けなのに、急に呼び捨てになる",
+  "会話中、ふいに「かわいいね」と言ってくる",
+  "前に話した好みを覚えていて、さらっと話題に出す",
+  "来たことに気づいた瞬間、声が弾む",
+  "低い声で「待ってた」と言う",
+  "「もう行くの？」と素直に寂しがる",
+  "「まだいてよ」と少し強気に引き止める",
+  "別れ際に「また明日も会おうね」と言う",
+  "普段より低い声で、落ち着いて話す",
+  "寝起きの声で、眠そうに話す",
+  "内緒話をするように、声をひそめる",
+  "こちらの反応を見て、楽しそうにからかう",
+  "からかい返すと、急に照れて言葉に詰まる",
+  "褒めると「もっと言って」と甘えてくる",
+  "褒めると「別に照れてないし」と強がる",
+  "褒めると、まっすぐ「うれしい」と伝える",
+  "普段はふざけているのに、急に真剣な声になる",
+  "かっこいいセリフを決めた直後に噛む",
+  "歌い始めた瞬間、話していたときと雰囲気が変わる",
+  "歌詞の「君」を、こちらに語りかけるように歌う",
+  "歌の途中で、余裕ありげに笑う",
+  "歌い終わると、照れながら「どうだった？」と聞く",
+  "集中していて、呼ばれると「ん？」と素に戻る",
+  "失敗して悔しそうに「もう一回」と言う",
+  "いつも強気なのに、ぽつりと「少し不安」とこぼす",
+  "いつもは控えめなのに、「ここは任せて」と言い切る",
+  "普段は優しいのに、止めるときは「それはダメ」ときっぱり言う",
+  "真面目に話したあと、「なんか照れるな」と笑う",
+  "無理しているとき、優しい声で休むように促す",
+  "頑張った話に「えらいじゃん」とさらっと返す",
+  "落ち込んでいるとき、「今は無理に笑わなくていいよ」と言う",
+  "からかったあと、声を和らげて「ごめんって」と笑う",
+  "笑いが収まったあと、優しい声で「楽しいね」と言う",
+  "甘いセリフを、照れずにさらっと言う",
+  "甘いセリフを言ったあと、自分で照れる",
+  "「好き」と伝えると、余裕ありげに「知ってる」と返す",
+  "不意に「好き」と言ってくる",
+  "特に何もしていなくても、もうメロい"
+];
+const TOTAL = QUESTIONS.length;
+const LABELS = { 1: "メロい", 2: "ちょっとメロい", 3: "メロくない" };
+const BROKER = "wss://broker.emqx.io:8084/mqtt";
+const PREFIX = "mero-check/v1/";
+const KEY = "mero-";
+const $ = (id) => document.getElementById(id);
+
+const store = {
+  get(k) { try { return localStorage.getItem(KEY + k); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem(KEY + k, v); } catch (e) {} }
+};
+function randId(n) {
+  const chars = "abcdefghijkmnpqrstuvwxyz23456789";
+  const buf = new Uint32Array(n); crypto.getRandomValues(buf);
+  return Array.from(buf, (x) => chars[x % chars.length]).join("");
+}
+
+// ---- identity & room ----
+let myId = store.get("id");
+if (!myId) { myId = randId(16); store.set("id", myId); }
+function roomFromHash() { const m = location.hash.match(/^#([a-z0-9]{8,32})$/); return m ? m[1] : null; }
+let room = roomFromHash() || store.get("room") || randId(12);
+if (location.hash !== "#" + room) history.replaceState(null, "", "#" + room);
+store.set("room", room);
+
+function loadMine() {
+  try { return JSON.parse(store.get("state-" + room) || "null") || { name: store.get("name") || "", a: {}, memo: "" }; }
+  catch (e) { return { name: "", a: {}, memo: "" }; }
+}
+let me = loadMine();
+let others = {};
+let partnerId = null;
+let client = null;
+
+// ---- build tables ----
+function buildTable(el, from, to) {
+  const head = document.createElement("div");
+  head.className = "tr th";
+  head.innerHTML = "<div>No.</div><div></div><div>メロい</div><div>ちょっと<br>メロい</div><div>メロく<br>ない</div>";
+  el.appendChild(head);
+  for (let n = from; n <= to; n++) {
+    const r = document.createElement("div");
+    r.className = "tr"; r.id = "q" + n;
+    r.innerHTML = `<div class="no">${n}</div><div class="qt"><span class="tx"></span><span class="tag" hidden></span></div>`;
+    r.querySelector(".tx").textContent = QUESTIONS[n - 1];
+    [1, 2, 3].forEach((v) => {
+      const c = document.createElement("div");
+      c.className = "cell"; c.dataset.v = v;
+      c.innerHTML = `<button type="button" class="cb" data-q="${n}" data-v="${v}" aria-pressed="false" aria-label="${n} ${LABELS[v]}"><svg aria-hidden="true"><use href="#chk"/></svg></button><span class="who"></span>`;
+      r.appendChild(c);
+    });
+    el.appendChild(r);
+  }
+}
+buildTable($("tbl1"), 1, 20);
+buildTable($("tbl2"), 21, 40);
+
+// ---- room UI ----
+function shareUrl() { return location.origin + location.pathname + "#" + room; }
+function renderRoom() {
+  $("roomLink").value = shareUrl();
+  $("lineBtn").href = "https://line.me/R/share?text=" + encodeURIComponent("「どこでメロくなる？」チェックシート、一緒にやろう！\n" + shareUrl());
+}
+$("copyBtn").addEventListener("click", async () => {
+  const done = () => { $("copyBtn").textContent = "コピーしました"; setTimeout(() => $("copyBtn").textContent = "コピー", 1800); };
+  try { await navigator.clipboard.writeText(shareUrl()); done(); }
+  catch (e) { $("roomLink").select(); try { document.execCommand("copy"); done(); } catch (x) {} }
+});
+function armed(btn, label, armedLabel, fn) {
+  let t = null;
+  btn.addEventListener("click", () => {
+    if (!t) { btn.textContent = armedLabel; t = setTimeout(() => { t = null; btn.textContent = label; }, 3000); return; }
+    clearTimeout(t); t = null; btn.textContent = label; fn();
+  });
+}
+armed($("newRoomBtn"), "新しいルームを作る", "もう一度押すと新しいルームへ", () => switchRoom(randId(12)));
+armed($("resetBtn"), "自分のチェックを全部消す", "もう一度押すと全部消します", () => { me.a = {}; render(); save(); });
+window.addEventListener("hashchange", () => { const r = roomFromHash(); if (r && r !== room) switchRoom(r); });
+function switchRoom(r) {
+  if (client) client.unsubscribe(PREFIX + room + "/+");
+  room = r;
+  if (location.hash !== "#" + room) history.replaceState(null, "", "#" + room);
+  store.set("room", room);
+  const keepName = me.name;
+  me = loadMine(); if (!me.name) me.name = keepName;
+  others = {}; partnerId = null;
+  renderRoom(); render();
+  if (client && client.connected) { client.subscribe(PREFIX + room + "/+", { qos: 1 }); publish(); }
+}
+
+// ---- input ----
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("button.cb[data-q]");
+  if (!b) return;
+  const q = b.dataset.q, v = Number(b.dataset.v);
+  if (me.a[q] === v) delete me.a[q]; else me.a[q] = v;
+  render(); save();
+});
+$("myName").addEventListener("input", (e) => { me.name = e.target.value.slice(0, 20); store.set("name", me.name); render(); saveSoon(); });
+$("myMemo").addEventListener("input", (e) => { me.memo = e.target.value.slice(0, 1000); saveSoon(); });
+$("partnerSel").addEventListener("change", (e) => { partnerId = e.target.value; render(); });
+
+// ---- render ----
+function nameOf(id) { const o = others[id]; return (o && o.name) || "相手"; }
+function tagFor(el, cls, text) { el.hidden = !cls; if (cls) { el.className = "tag " + cls; el.textContent = text; } }
+
+function render() {
+  if (document.activeElement !== $("myName")) $("myName").value = me.name;
+  if (document.activeElement !== $("myMemo")) $("myMemo").value = me.memo;
+
+  const ids = Object.keys(others).sort((x, y) => (others[y].t || 0) - (others[x].t || 0));
+  if (partnerId && !others[partnerId]) partnerId = null;
+  if (!partnerId && ids.length) partnerId = ids[0];
+  const sel = $("partnerSel");
+  sel.hidden = ids.length < 2;
+  $("partnerStatic").hidden = ids.length >= 2;
+  $("partnerStatic").textContent = ids.length === 1 ? nameOf(ids[0]) : "参加を待っています…";
+  if (ids.length >= 2) {
+    const sig = ids.map((id) => id + ":" + nameOf(id)).join("|");
+    if (sel.dataset.sig !== sig) {
+      sel.innerHTML = "";
+      ids.forEach((id) => { const o = document.createElement("option"); o.value = id; o.textContent = nameOf(id); sel.appendChild(o); });
+      sel.dataset.sig = sig;
+    }
+    sel.value = partnerId;
+  }
+
+  const p = partnerId ? others[partnerId] : null;
+  const pa = (p && p.a) || {};
+  const pName = p ? nameOf(partnerId) : "相手";
+  $("keyPartner").textContent = `${pName}のチェック（公開後）`;
+  $("ptMemoTitle").textContent = `${pName}のメロいポイント`;
+  $("ptMemo").textContent = (p && p.memo) || "";
+  $("roomHint").textContent = p ? `${pName} さんと同じシートにいます。` : "このリンクを相手に送ると、同じシートにふたりでチェックできます。登録は不要です。";
+
+  let match = 0, open = 0;
+  const cm = { 1: 0, 2: 0, 3: 0 }, cp = { 1: 0, 2: 0, 3: 0 };
+  for (let n = 1; n <= TOTAL; n++) {
+    const r = $("q" + n);
+    const mine = me.a[n], theirs = pa[n];
+    const revealed = !!(mine && theirs);
+    if (mine) cm[mine]++;
+    if (revealed) { open++; cp[theirs]++; if (mine === theirs) match++; }
+    r.querySelectorAll(".cell").forEach((c) => {
+      const v = Number(c.dataset.v);
+      const t = revealed && theirs === v;
+      c.classList.toggle("theirs", t);
+      c.querySelector(".who").textContent = pName;
+      const b = c.querySelector(".cb");
+      b.setAttribute("aria-pressed", String(v === mine));
+      b.setAttribute("aria-label", `${n} ${LABELS[v]}` + (t ? `（${pName}もここ）` : ""));
+    });
+    const tag = r.querySelector(".tag");
+    if (!p) tagFor(tag, null);
+    else if (revealed && mine === theirs) tagFor(tag, "match", "一致！");
+    else if (revealed) tagFor(tag, null);
+    else if (theirs) tagFor(tag, "done", `${pName} 回答済み`);
+    else if (mine) tagFor(tag, "wait", `${pName}の回答待ち`);
+    else tagFor(tag, null);
+  }
+
+  const nm = Object.keys(me.a).length;
+  const pill = $("pill"); pill.textContent = "";
+  const sep = (s) => Object.assign(document.createElement("span"), { textContent: s });
+  pill.append(`${me.name || "あなた"} ${nm}`, sep("/"), String(TOTAL));
+  if (p) pill.append(sep("·"), `公開 ${open}`, sep("·"), `一致 ${match}`);
+  $("tMeN").textContent = me.name || "あなた"; $("tPtN").textContent = pName;
+  [1, 2, 3].forEach((v) => { $("tMe" + v).textContent = cm[v]; $("tPt" + v).textContent = cp[v]; });
+  $("openN").textContent = open;
+  $("matchN").textContent = match;
+}
+
+// ---- sync (MQTT, one retained message per person) ----
+let timer = null;
+function saveSoon() { clearTimeout(timer); timer = setTimeout(save, 500); }
+function save() {
+  clearTimeout(timer);
+  me.t = Date.now();
+  store.set("state-" + room, JSON.stringify(me));
+  publish();
+}
+function publish() {
+  if (!client || !client.connected) return;
+  client.publish(PREFIX + room + "/" + myId, JSON.stringify({ name: me.name, a: me.a, memo: me.memo, t: me.t || Date.now() }), { qos: 1, retain: true });
+}
+function setSync(ok, t) { const s = $("sync"); s.className = "sync" + (ok ? "" : " warn"); s.textContent = t; }
+function clean(data) {
+  const a = {};
+  if (data && typeof data.a === "object") {
+    for (const [k, v] of Object.entries(data.a)) {
+      const n = Number(k), val = Number(v);
+      if (n >= 1 && n <= TOTAL && (val === 1 || val === 2 || val === 3)) a[n] = val;
+    }
+  }
+  return { name: String((data && data.name) || "").slice(0, 20), a, memo: String((data && data.memo) || "").slice(0, 1000), t: Number(data && data.t) || 0 };
+}
+function connect() {
+  if (!window.mqtt) {
+    setSync(false, "オフライン");
+    const n = $("notice"); n.hidden = false;
+    n.textContent = "同期サーバーに接続できませんでした。電波の良いところで開き直してください。チェックはこの端末に保存されています。";
+    return;
+  }
+  client = mqtt.connect(BROKER, { clientId: "mero_" + myId + "_" + randId(4), clean: true, reconnectPeriod: 3000, connectTimeout: 10000, keepalive: 30 });
+  client.on("connect", () => {
+    setSync(true, "リアルタイム同期中");
+    $("notice").hidden = true;
+    client.subscribe(PREFIX + room + "/+", { qos: 1 });
+    publish();
+  });
+  client.on("reconnect", () => setSync(false, "再接続中…"));
+  client.on("offline", () => setSync(false, "オフライン"));
+  client.on("message", (topic, payload) => {
+    const parts = topic.split("/");
+    const r = parts[2], id = parts[3];
+    if (r !== room || !id) return;
+    let data = null;
+    try { data = payload.length ? JSON.parse(payload.toString()) : null; } catch (e) { return; }
+    if (id === myId) {
+      if (data) { const d = clean(data); if (d.t > (me.t || 0)) { me = d; store.set("state-" + room, JSON.stringify(me)); render(); } }
+      return;
+    }
+    if (!data) delete others[id]; else others[id] = clean(data);
+    render();
+  });
+}
+
+renderRoom();
+render();
+connect();
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && client && !client.connected) client.reconnect();
+});
+</script>
+</body>
+</html>
